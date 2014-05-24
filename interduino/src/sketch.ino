@@ -18,5 +18,6 @@ if(Serial.available() > 2) {
 	int pin = Serial.read();
 	pinState[pin] = Serial.read();
 	int duration = Serial.read();
+	Serial.println("Some shit is set!");
 	}
 }

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 arduino_python_script="$(pwd)/poke-arduino.py"
-ping_logfile="/var/log/iptables.log"
+ping_logfile="/var/log/messages"
 hammer_pattern="\[ping-hammer\]"
 
 # Automatically install inotify-tools if it wasn't found.
@@ -44,8 +44,7 @@ install-inotify-tools () {
 # Removes all lines with our hammer pattern from the log file, making sure
 # it doesn't get gigantic
 tidy-log() {
-  grep -v "$hammer_pattern" "$ping_logfile" > /tmp/ping-hammer-log-filtered
-  mv /tmp/ping-hammer-log-filtered "$ping_logfile"
+  sed -i '$d' "$ping_logfile"
 }
 
 setup-listener() {

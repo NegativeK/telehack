@@ -8,10 +8,8 @@ void loop();
 
 void setup()
 {
-for(int i=3; i<9; i++) {
-	pinMode(i, OUTPUT);
-	}
-Serial.begin(9600);
+	Serial.begin(9600);
+	pinMode(13, OUTPUT);
 
 }
 
@@ -19,10 +17,13 @@ int pinState[6];
 
 void loop()
 {
-if(Serial.available() > 2) {
-	int pin = Serial.read();
-	pinState[pin] = Serial.read();
-	int duration = Serial.read();
-	Serial.println("Some shit is set!");
+	if(Serial.available()){
+		int ledState = Serial.read();
+		if(ledState == 65){
+			digitalWrite(13, HIGH);
+		}
+		if(ledState == 90){ 
+			digitalWrite(13, LOW);
+		}
 	}
 }

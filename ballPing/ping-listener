@@ -1,0 +1,80 @@
+#!/bin/bash
+
+arduino_python_script="$(pwd)/poke-arduino.py"
+ping_logfile="/var/log/messages"
+hammer_pattern="\[ping-hammer\]"
+
+# Automatically install inotify-tools if it wasn't found.
+# (Will ask for confirmation before doing that)
+install-inotify-tools () {
+  read -n 1 -sp "inotify-tools is not installed. Install it now? (Requires root) (Y/n) " do_install
+  echo
+
+  if [ "$do_install" = "y" ] || [ "$do_install" = "Y" ] || [ "$do_install" = "" ]; then
+    # Figure out the package manager
+    install_command=""
+    if [[ ! $(whereis apt-get) = "apt-get:" ]]; then
+      install_command="apt-get install"
+    elif [[ ! $(whereis pacman) = "pacman:" ]]; then
+      install_command="pacman -S"
+    elif [[ ! $(whereis yum) = "yum:" ]]; then
+      install_command="yum install"
+    elif [[ ! $(whereis aptitude) = "aptitude:" ]]; then
+      install_command="aptitude install"
+    else
+      echo "Do you even package manager bro?"
+      echo "Please manually install inotify-tools and try again."
+      exit 1
+    fi
+
+    # Attempt installing
+    if $install_command inotify-tools; then
+      setup-listener # Resume
+    else
+      echo "Failed to install, please install inotify-tools manually and try again."
+      exit 1
+    fi
+
+  else
+    echo "Aborted."
+    exit 1
+  fi
+}
+
+setup-listener() {
+  [[ $(whereis inotifywait) = "inotifywait:" ]] && install-inotify-tools
+
+  # Ensure the log file to watch exists
+  if [[ ! -f "$ping_logfile" ]]; then
+    echo "Ping logfile at $ping_logfile does not exist; aborting."
+    exit 1
+  fi
+
+  # Actually set up the listener
+  echo "Setting up ping listener. (Ctrl+C to exit)"
+  while inotifywait -qe modify -o /dev/null $ping_logfile
+  do
+    # Ensure the latest addition to the logfile was a ping 
+    # (contained the pattern we're looking for)
+    if [[ ! $(tail -n 1 "$ping_logfile" | grep "$hammer_pattern") = "" ]]; then
+      hammer-that-shit
+    fi
+  done
+}
+
+hammer-that-shit() {
+  echo "Got ping."
+  python $arduino_python_script
+}
+
+# That'll be enough functions, let's get down to business
+
+# Get some root up in here
+if [[ ! $(whoami) = "root" ]]; then
+  echo "I'm gonna need some root to do what I gotta do."
+  exit 1
+fi
+
+# GOGOGO
+setup-listener
+

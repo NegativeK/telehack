@@ -41,12 +41,6 @@ install-inotify-tools () {
   fi
 }
 
-# Removes all lines with our hammer pattern from the log file, making sure
-# it doesn't get gigantic
-tidy-log() {
-  sed -i '$d' "$ping_logfile"
-}
-
 setup-listener() {
   [[ $(whereis inotifywait) = "inotifywait:" ]] && install-inotify-tools
 
@@ -63,7 +57,6 @@ setup-listener() {
     # Ensure the latest addition to the logfile was a ping 
     # (contained the pattern we're looking for)
     if [[ ! $(tail -n 1 "$ping_logfile" | grep "$hammer_pattern") = "" ]]; then
-      tidy-log
       hammer-that-shit
     fi
   done

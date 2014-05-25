@@ -1,3 +1,9 @@
+import serial
+
 print("Hammering.")
 
-# Arduino interfacing code left as excercise to student.
+ser = serial.Serial('/dev/ttyACM0', 9600)
+ser.write('A')
+time.sleep(.500)
+ser.write('Z')
+

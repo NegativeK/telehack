@@ -4,7 +4,7 @@
 void setup()
 {
 	Serial.begin(9600);
-	pinMode(13, OUTPUT);
+	pinMode(4, OUTPUT);
 
 }
 
@@ -15,12 +15,12 @@ void loop()
 	if(Serial.available()){
 		int ledState = Serial.read();
 		if(ledState == 65){
-			digitalWrite(13, HIGH);
+			digitalWrite(4, HIGH);
 			delay(10000);
-			digitalWrite(13, LOW);
+			digitalWrite(4, LOW);
 		}
 //		if(ledState == 90){ 
-//			digitalWrite(13, LOW);
+//			digitalWrite(4, LOW);
 //		}
 	}
 }

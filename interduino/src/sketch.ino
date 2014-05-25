@@ -17,10 +17,11 @@ void loop()
 		if(ledState == 65){
 			digitalWrite(13, HIGH);
 		}
-		if(ledState == 90){ 
-			digitalWrite(13, LOW);
-		}
+//		if(ledState == 90){ 
+//			digitalWrite(13, LOW);
+//		}
 	delay(2000);
+	digitalWrite(13, LOW);
 	}
 }
 

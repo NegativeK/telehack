@@ -20,7 +20,7 @@ void loop()
 //		if(ledState == 90){ 
 //			digitalWrite(13, LOW);
 //		}
-	delay(2000);
+	delay(7000);
 	digitalWrite(13, LOW);
 	}
 }

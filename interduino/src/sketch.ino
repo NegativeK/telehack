@@ -16,7 +16,7 @@ void loop()
 		int ledState = Serial.read();
 		if(ledState == 65){
 			digitalWrite(13, HIGH);
-			delay(7000);
+			delay(10000);
 			digitalWrite(13, LOW);
 		}
 //		if(ledState == 90){ 
